@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circleium Progression CRM — Test Mode</title>
+<style>
+:root{--navy:#062b59;--navy2:#173f70;--blue:#5f7fb4;--bg:#eef3fb;--card:#fff;--line:#d9e2ef;--muted:#64748b;--text:#18324b;--green:#2f7c63;--amber:#a66a11;--red:#934646}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+header{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.lockup{display:flex;align-items:center;gap:16px}.logo{height:44px}.product{border-left:1px solid var(--line);padding-left:16px}.product strong{display:block;color:var(--navy);font-size:17px}.product span,.small{font-size:11px;color:var(--muted)}
+.brandline{height:4px;background:linear-gradient(90deg,#39b54a 0 25%,#f5c400 25% 50%,#f7941d 50% 75%,#00a9df 75% 100%)}
+.layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 80px)}aside{background:#fff;border-right:1px solid var(--line);padding:22px 12px}
+.sidebrand{display:flex;gap:10px;align-items:center;padding:0 10px 17px;font-weight:700;color:var(--navy)}.sidebrand img{width:32px}
+.nav{width:100%;border:0;background:transparent;text-align:left;padding:12px 14px;border-radius:9px;margin:3px 0;cursor:pointer;color:#31485d}.nav:hover,.nav.active{background:#e6eef8;color:var(--navy);font-weight:700}.admin{display:none}
+main{padding:28px;overflow:auto}h1{margin:0 0 5px;color:#102f53}.sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 14px rgba(30,64,100,.045)}.card{padding:18px}.card b{font-size:26px;color:var(--navy)}.card div{font-size:11px;color:var(--muted);margin-top:5px}
+.panel{overflow:hidden}.panelhead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.panelhead h2{margin:0;font-size:17px}.filters{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:9px;padding:13px 18px;background:#fbfdff;border-bottom:1px solid var(--line)}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cbd7e4;border-radius:8px;background:#fff;font:inherit}textarea{min-height:90px}
+button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;cursor:pointer}.primary{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+table{width:100%;border-collapse:collapse;min-width:1050px}th,td{padding:12px 13px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px;vertical-align:top}th{background:#fbfdff;color:#66788a}.tablewrap{overflow:auto}
+.badge{display:inline-block;border-radius:999px;padding:5px 8px;background:#eaf1f8;color:#28577f;font-size:10px;font-weight:700}.muted{color:var(--muted)}.hidden{display:none!important}
+.group{margin:13px;padding:14px;border:1px solid var(--line);border-radius:11px}.pills{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.pill{background:#edf4f8;border:1px solid #dbe8ef;border-radius:999px;padding:6px 9px;font-size:11px;cursor:pointer}.mine{background:#dceef7;border-color:#8fbdd2;font-weight:700}
+.modal{position:fixed;inset:0;background:rgba(10,30,48,.42);display:flex;justify-content:flex-end;z-index:20}.drawer{width:min(680px,94vw);height:100%;background:#fff;overflow:auto}.drawerhead{position:sticky;top:0;background:#fff;padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.drawerbody{padding:20px}.section{border:1px solid var(--line);border-radius:10px;margin-bottom:15px;overflow:hidden}.section h3{margin:0;padding:12px 14px;background:#f8fbfd;border-bottom:1px solid var(--line);font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px}.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}.readonly{background:#eef6fb;border:1px solid #c9deea;padding:10px;border-radius:8px;font-size:12px;margin-bottom:14px}
+.login{position:fixed;inset:80px 0 0;background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding-top:70px;z-index:50}.loginbox{width:min(430px,92vw);background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 10px 35px rgba(20,50,80,.08)}.loginbox img{height:44px;margin-bottom:18px}.loginbox h2{margin:0 0 6px}.loginbox p{color:var(--muted);font-size:13px}.loginbox .field{margin:12px 0}.error{color:#9b3b3b;font-size:12px;margin-top:10px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}.cards{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+ <div class="lockup"><img class="logo" src="circleium-logo.png"><div class="product"><strong>Progression CRM</strong><span>TEST MODE</span></div></div>
+ <div><span id="who" class="small"></span></div>
+</header>
+<div class="brandline"></div>
+
+<div id="login" class="login">
+ <div class="loginbox">
+  <img src="circleium-logo.png">
+  <h2>Partner Workspace</h2>
+  <p>Sign in with your Circleium Partner or Admin account.</p>
+  <div class="field"><label>Email</label><input id="loginEmail" type="email"></div>
+  <div class="field"><label>Password</label><input id="loginPassword" type="password"></div>
+  <button class="primary" id="loginBtn">Sign in</button>
+  <div id="loginError" class="error"></div>
+ </div>
+</div>
+
+<div class="layout">
+<aside>
+ <div class="sidebrand"><img src="circleium-mark.png"><span>Partner Workspace</span></div>
+ <button class="nav active" data-view="dashboard">Dashboard</button>
+ <button class="nav" data-view="global">Global Progression Register</button>
+ <button class="nav" data-view="mine">My Member Progressions</button>
+ <button class="nav" data-view="groups">Partner Groups</button>
+ <button class="nav admin" data-view="adminGroups">Potential Groups · Admin</button>
+ <button class="nav admin" data-view="partners">Partners · Admin</button>
+ <button class="nav" id="logoutBtn">Sign out</button>
+</aside>
+<main>
+<section id="dashboardView">
+ <h1>Progression Dashboard</h1><div class="sub">Live test data from the Circleium Progression database.</div>
+ <div class="cards" id="stats"></div>
+ <div class="panel"><div class="panelhead"><h2>Recent Assigned Progressions</h2></div><div class="tablewrap"><table id="recent"></table></div></div>
+</section>
+
+<section id="globalView" class="hidden">
+ <h1>Global Progression Register</h1><div class="sub">Search network-wide matching summaries. Other Partners’ private submissions remain hidden.</div>
+ <div class="panel"><div class="filters"><input id="gq" placeholder="Search"><select id="gpool"><option value="">All Interest Pools</option></select><select id="gasset"><option value="">All Asset Areas</option></select><select id="gtimescale"><option value="">All Timescales</option></select><select id="gstatus"><option value="">All Statuses</option></select></div><div class="tablewrap"><table id="globalTable"></table></div></div>
+</section>
+
+<section id="mineView" class="hidden">
+ <h1>My Member Progressions</h1><div class="sub">Original submissions are read-only. Use Partner Management to record progress, notes and next actions.</div>
+ <div class="panel"><div class="tablewrap"><table id="mineTable"></table></div></div>
+</section>
+
+<section id="groupsView" class="hidden">
+ <h1>Partner Groups</h1><div class="sub">Groups containing one or more of your assigned member progressions.</div>
+ <div class="panel"><div class="panelhead"><h2>Groups Involving My Members</h2><button id="newGroup" class="primary">Start Group</button></div><div id="groupList"></div></div>
+ <div class="panel" style="margin-top:16px"><div class="panelhead"><h2>Link-Up Requests</h2></div><div id="requestList"></div></div>
+</section>
+
+<section id="adminGroupsView" class="hidden">
+ <h1>Potential Groups · Admin</h1><div class="sub">Circleium-wide oversight of all potential groups.</div>
+ <div class="panel"><div id="adminGroupList"></div></div>
+</section>
+
+<section id="partnersView" class="hidden">
+ <h1>Partners · Admin</h1><div class="sub">Invite Partners and configure the Circleium areas/categories they cover.</div>
+ <div class="panel"><div class="panelhead"><h2>Partner Accounts</h2><button id="invitePartner" class="primary">Invite Partner</button></div><div class="tablewrap"><table id="partnersTable"></table></div></div>
+</section>
+</main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="drawer"><div class="drawerhead"><strong id="drawerTitle">Record</strong><button id="closeDrawer">Close</button></div><div id="drawerBody" class="drawerbody"></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body></html>

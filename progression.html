@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circleium Progression Registration</title>
+<style>
+:root{--navy:#062b59;--bg:#eef3fb;--line:#d9e2ef;--muted:#64748b}*{box-sizing:border-box}body{margin:0;font-family:Arial;background:var(--bg);color:#18324b}header{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px}header img{height:44px}.brandline{height:4px;background:linear-gradient(90deg,#39b54a 0 25%,#f5c400 25% 50%,#f7941d 50% 75%,#00a9df 75% 100%)}.wrap{max-width:900px;margin:28px auto;padding:0 18px}.hero,.section{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}.hero{padding:24px}.hero h1{margin:0 0 7px;color:var(--navy)}.hero p,.help{color:var(--muted);font-size:12px;line-height:1.5}.head{padding:16px 18px;background:#fbfdff;border-bottom:1px solid var(--line)}.head h2{font-size:16px;margin:0 0 4px}.body{padding:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}label{display:block;font-size:11px;font-weight:700;margin-bottom:5px}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd7e4;border-radius:8px;font:inherit}textarea{min-height:85px}.private{display:inline-block;background:#edf5f1;color:#2f7c63;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:700;margin-top:6px}.check{display:flex;gap:8px;align-items:flex-start;font-size:12px}.check input{width:auto;margin-top:2px}button{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:12px 17px;font-weight:700;cursor:pointer}.success{padding:20px;background:#edf7f1;border:1px solid #cfe5d6;border-radius:12px}.error{padding:10px;color:#973f3f;font-size:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}</style>
+</head><body><header><img src="circleium-logo.png"></header><div class="brandline"></div>
+<div class="wrap">
+<div class="hero"><h1>Progression Registration</h1><p>Tell Circleium that you are ready to explore shared ownership more seriously. Registration does not commit you to purchase an asset or join a syndicate.</p></div>
+<form id="form">
+<div class="section"><div class="head"><h2>Your Circleium details</h2><span class="private">Private — Circleium & Partner only</span></div><div class="body"><div class="grid">
+<div><label>Circleium Profile Name *</label><input name="member_profile_name" id="profile" placeholder="@profilename" required><div class="help">No spaces. The @ will be added automatically.</div></div>
+<div><label>Email Address *</label><input name="member_email" type="email" required></div>
+<div><label>Your Home County / Area *</label><select name="home_county" id="homeCounty" required><option value="">Select county / area</option><option>Shropshire</option><option>Gwynedd</option><option>Cheshire</option><option>Devon</option></select></div>
+<div><label>Your Nearest Circleium Area *</label><select name="partner_area" id="partnerArea" disabled required><option value="">Select your county first</option></select><div class="help">Used to connect you with your local Circleium Partner.</div></div>
+</div></div></div>
+<div class="section"><div class="head"><h2>1. What are you looking to own?</h2></div><div class="body"><div class="grid">
+<div class="full"><label>Interest Pool / Category *</label><select name="interest_pool" required><option value="">Select</option><option>Personal Watercraft</option><option>Classic Cars</option><option>Sports Boats</option><option>Motorhomes</option></select></div>
+<div class="full"><label>Describe the opportunity *</label><textarea name="opportunity" required placeholder="e.g. Performance personal watercraft for use around North Wales"></textarea></div>
+<div><label>Preferred Asset Location</label><input name="asset_location" placeholder="e.g. Abersoch / Pwllheli"></div>
+<div><label>Preferred Asset County / Area</label><input name="asset_county" placeholder="e.g. Gwynedd"></div>
+<div><label>Location flexibility</label><select name="location_flexibility"><option>This location only</option><option>Within the surrounding area</option><option>Within the wider region</option><option>Flexible</option></select></div>
+<div><label>Specific asset identified?</label><select name="specific_asset"><option>No</option><option>Yes</option></select></div>
+<div class="full"><label>Asset / model if known</label><input name="asset_model"></div>
+</div></div></div>
+<div class="section"><div class="head"><h2>2. Preferred ownership group</h2></div><div class="body"><div class="grid">
+<div><label>Preferred number of owners</label><select name="preferred_owners"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>Flexible</option></select></div>
+<div><label>Timescale</label><select name="timescale"><option>As soon as a suitable group forms</option><option>Within 3 months</option><option>3–6 months</option><option>6–12 months</option></select></div>
+<div class="full"><label>What is important when considering potential co-owners?</label><textarea name="coowner_preferences"></textarea></div>
+</div></div></div>
+<div class="section"><div class="head"><h2>3. Usage & financial preferences</h2><span class="private">Private — Circleium & Partner only</span></div><div class="body"><div class="grid">
+<div><label>Expected frequency of use</label><select name="usage"><option>Occasional</option><option>Monthly</option><option>Regular</option><option>Frequent</option></select></div>
+<div><label>Typical access</label><select name="preferred_access"><option>Flexible</option><option>Mainly weekdays</option><option>Mainly weekends</option><option>School holidays</option></select></div>
+<div><label>Approximate personal contribution</label><select name="budget"><option>Under £5,000</option><option>£5,000–£10,000</option><option>£10,000–£25,000</option><option>£25,000–£50,000</option><option>£50,000–£100,000</option><option>£100,000+</option><option>Flexible / To discuss</option></select></div>
+<div><label>Consider finance?</label><select name="finance_interest"><option>No</option><option>Possibly</option><option>Yes</option></select></div>
+<div class="full"><label>Additional usage notes</label><textarea name="usage_notes"></textarea></div>
+</div></div></div>
+<div class="section"><div class="head"><h2>4. Ready to progress</h2></div><div class="body">
+<label class="check"><input type="checkbox" required><span>I confirm that I have a genuine interest in exploring this shared ownership opportunity and am happy for Circleium and my assigned Circleium Partner to contact me and consider compatible member introductions.</span></label>
+<p class="help">Joining the Progression Register does not commit you to purchase an asset, enter a syndicate or proceed with any proposed ownership group.</p>
+<button id="submitBtn" type="submit">Join Progression Register</button><div id="msg"></div>
+</div></div>
+</form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="progression.js"></script>
+</body></html>
