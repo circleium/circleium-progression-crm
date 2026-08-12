@@ -37,7 +37,11 @@ async function loadMine(){
  else {const {data}=await sb.from("progressions").select("*").order("created_at",{ascending:false});myRows=data||[]}
 }
 async function loadGroups(){const {data,error}=await sb.rpc("my_partner_groups");myGroups=data||[];if(error)console.error(error)}
-async function loadPartners(){const {data}=await sb.from("partners").select("id,name,email,active,accepting_new,user_id").order("name");allPartners=data||[]}
+async function loadPartners(){
+ const {data,error}=await sb.from("partners").select("id,name,email,active,accepting_new,user_id").order("name");
+ if(error) console.error(error);
+ allPartners=data||[];
+}
 function renderStats(){
  const values=[["My active progressions",myRows.filter(r=>!["Progressed","Withdrawn"].includes(r.status)).length],["Global matching records",globalRows.length],["Partner Groups",myGroups.length],["Link-ups pending",myGroups.reduce((n,g)=>n+(g.pending_requests||0),0)]];
  $("stats").innerHTML=values.map(([l,n])=>`<div class="card"><b>${n}</b><div>${l}</div></div>`).join("");
@@ -61,7 +65,108 @@ async function renderRequests(){
  const reqs=data||[];
  $("requestList").innerHTML=reqs.length?reqs.map(r=>`<div class="group"><strong>${esc(r.status)} Link-Up Request</strong><div class="small">${new Date(r.created_at).toLocaleString()}</div>${r.to_partner_id===myPartner.id&&r.status==="Requested"?`<div style="margin-top:10px"><button class="primary" onclick="respondRequest('${r.id}',true)">Approve</button> <button onclick="respondRequest('${r.id}',false)">Decline</button></div>`:""}</div>`).join(""):"<div class='group muted'>No link-up requests.</div>";
 }
-function renderPartners(){$("partnersTable").innerHTML=`<thead><tr><th>Name</th><th>Email</th><th>Active</th><th>Accepting</th></tr></thead><tbody>`+allPartners.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.email)}</td><td>${p.active?"Yes":"No"}</td><td>${p.accepting_new?"Yes":"No"}</td></tr>`).join("")+"</tbody>"}
+function renderPartners(){
+ $("partnersTable").innerHTML=`<thead><tr><th>Name</th><th>Email</th><th>Coverage</th><th>Active</th><th>Accepting</th><th></th></tr></thead><tbody>`+
+ allPartners.map(p=>`<tr>
+   <td><strong>${esc(p.name)}</strong></td>
+   <td>${esc(p.email)}</td>
+   <td><span class="muted">Manage areas & categories</span></td>
+   <td>${p.active?"Yes":"No"}</td>
+   <td>${p.accepting_new?"Yes":"No"}</td>
+   <td><button class="primary" onclick="managePartner('${p.id}')">Manage Partner</button></td>
+ </tr>`).join("")+"</tbody>";
+}
+
+const PARTNER_DIVISIONS={
+ "Driving":["Super Cars","Performance Cars","Adventure & Overland Cars","Motorsport","Kit Cars","Classic Cars"],
+ "Riding":["Performance & Superbikes","Adventure & Touring Bikes","Cruisers & Custom Bikes","Offroad & Motocross Bikes","Classic Bikes"],
+ "Boating":["Personal Watercraft","Sailing Boats & Yachts","Motorboats & Powerboats","RIBs & Jetboats","Canal & Riverboats"],
+ "Flying":["Microlights & Ultralights","Gliders & Sailplanes","Experimental & Kit Aircraft","Light Aircraft","Helicopters"],
+ "Exploring":["Campervans","Caravans","Motorhomes"],
+ "Escaping":["Park Homes","Lodges & Cabins","Holiday Homes"],
+ "Living":["Recreation","Home & Garden Care"]
+};
+
+function areaRowHtml(county="",area=""){
+ return `<div class="coverage-row" style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px">
+   <input class="covCounty" value="${esc(county)}" placeholder="County / territory e.g. Shropshire">
+   <input class="covArea" value="${esc(area)}" placeholder="Circleium area e.g. Shrewsbury">
+   <button type="button" onclick="this.closest('.coverage-row').remove()">Remove</button>
+ </div>`;
+}
+
+async function managePartner(id){
+ const {data,error}=await sb.rpc("admin_partner_coverage",{p_partner_id:id});
+ if(error){alert(error.message);return;}
+ const p=data.partner, areas=data.areas||[], cats=new Set(data.categories||[]);
+ $("drawerTitle").textContent=`${p.name} · Partner Coverage`;
+ $("drawerBody").innerHTML=`
+   <div class="section">
+     <h3>Partner Account</h3>
+     <div class="grid">
+       <div class="field"><label>Partner Name</label><input id="pcName" value="${esc(p.name)}"></div>
+       <div class="field"><label>Email</label><input id="pcEmail" type="email" value="${esc(p.email)}"></div>
+       <div class="field"><label>Account Active</label><select id="pcActive"><option value="true" ${p.active?"selected":""}>Yes</option><option value="false" ${!p.active?"selected":""}>No</option></select></div>
+       <div class="field"><label>Accepting New Progressions</label><select id="pcAccepting"><option value="true" ${p.accepting_new?"selected":""}>Yes</option><option value="false" ${!p.accepting_new?"selected":""}>No</option></select></div>
+     </div>
+   </div>
+
+   <div class="section">
+     <h3>Territory & Circleium Areas</h3>
+     <div style="padding:14px">
+       <p class="small" style="margin-top:0">Add each county/territory and Circleium area this Partner may receive member progressions from. Multiple Partners can cover the same area.</p>
+       <div id="coverageRows">${areas.length?areas.map(a=>areaRowHtml(a.county,a.area)).join(""):areaRowHtml()}</div>
+       <button type="button" onclick="$('coverageRows').insertAdjacentHTML('beforeend',areaRowHtml())">+ Add Area</button>
+     </div>
+   </div>
+
+   <div class="section">
+     <h3>Collections / Categories</h3>
+     <div style="padding:14px">
+       <p class="small" style="margin-top:0">A progression is eligible for this Partner when its home area and Interest Pool/category match the Partner's coverage.</p>
+       ${Object.entries(PARTNER_DIVISIONS).map(([division,items])=>`
+         <div style="margin-bottom:15px">
+           <strong style="display:block;margin-bottom:7px;color:#102f53">${esc(division)}</strong>
+           <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px">
+             ${items.map(c=>`<label style="display:flex;gap:7px;align-items:flex-start;font-size:12px">
+               <input class="covCategory" type="checkbox" value="${esc(c)}" ${cats.has(c)?"checked":""} style="width:auto;margin-top:2px">
+               <span>${esc(c)}</span>
+             </label>`).join("")}
+           </div>
+         </div>`).join("")}
+     </div>
+   </div>
+
+   <div style="display:flex;justify-content:flex-end;gap:8px">
+     <button onclick="$('modal').classList.add('hidden')">Cancel</button>
+     <button class="primary" onclick="savePartnerCoverage('${id}')">Save Partner Coverage</button>
+   </div>`;
+ $("modal").classList.remove("hidden");
+}
+
+async function savePartnerCoverage(id){
+ const areas=[...document.querySelectorAll(".coverage-row")].map(row=>({
+   county:row.querySelector(".covCounty").value.trim(),
+   area:row.querySelector(".covArea").value.trim()
+ })).filter(x=>x.county&&x.area);
+ const categories=[...document.querySelectorAll(".covCategory:checked")].map(x=>x.value);
+ const payload={
+   p_partner_id:id,
+   p_name:$("pcName").value.trim(),
+   p_email:$("pcEmail").value.trim(),
+   p_active:$("pcActive").value==="true",
+   p_accepting_new:$("pcAccepting").value==="true",
+   p_areas:areas,
+   p_categories:categories
+ };
+ const {error}=await sb.rpc("admin_update_partner_coverage",payload);
+ if(error){alert(error.message);return;}
+ $("modal").classList.add("hidden");
+ await loadPartners();
+ renderPartners();
+ alert("Partner coverage saved.");
+}
+
 async function openOwn(id){
  const r=myRows.find(x=>x.id===id)||(await sb.from("progressions").select("*").eq("id",id).single()).data;if(!r)return;
  $("drawerTitle").textContent=`${r.member_profile_name} · Full Progression`;
